@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+if [ -z "${TRAVIS_TAG}" ] ; then
+  exit 0
+fi
+
+USERNAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d"/" -f1)
+REPONAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d"/" -f2)
+
+export PATH="$(pwd)/tools/bin:$PATH"
+
+github-release \
+  release \
+  --user "${USERNAME}" \
+  --repo "${REPONAME}" \
+  --tag "${TRAVIS_TAG}" || true
+
+exec github-release \
+  release \
+  --user "${USERNAME}" \
+  --repo "${REPONAME}" \
+  --tag "${TRAVIS_TAG}" \
+  --name "travis-tools-${TRAVIS_OS_NAME}.tar.xz" \
+  --file "dist/travis-tools.tar.xz"
+  
