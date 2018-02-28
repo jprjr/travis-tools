@@ -104,7 +104,7 @@ void usage(char *prog, int code) {
 
 int main(int argc, char *argv[]) {
     char *prog = argv[0];
-    int c = 0, timeout = 60, sleeptime = 5, elapsed = 0;
+    int c = 0, timeout = 60, sleeptime = 30, elapsed = 0;
     extern char *optarg;
     extern int optind, optopt;
     char file[4096] = "/tmp/runbg-XXXXXX";
