@@ -1,0 +1,26 @@
+sudo: false
+dist: trusty
+language: c
+os:
+  - linux
+  - osx
+
+install:
+  - mkdir -p tools
+  - if [  "$TRAVIS_OS_NAME" == "linux" ] ; then curl -s -R -L -o tools/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2 ; fi
+  - if [  "$TRAVIS_OS_NAME" == "osx" ] ; then curl -s -R -L -o tools/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/darwin-amd64-github-release.tar.bz2 ; fi
+  - tar xf tools/github-release.tar.bz2 -C tools/bin --strip-components=3
+  - rm -f tools/github-release.tar.bz2
+
+script:
+  - if [ "TRAVIS_OS_NAME" == "linux" ] ; then make CFLAGS="-static -Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+  - if [ "TRAVIS_OS_NAME" == "osx" ] ; then make CFLAGS="-Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+
+after_success:
+  - if [ -z "${TRAVIS_TAG}" ] ; then exit 0 ; fi
+  - USERNAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d"/" -f1)
+  - REPONAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d"/" -f2)
+  - PATH="$(pwd)/tools/bin:$PATH" github-release release --user "${USERNAME}" --repo "${REPONAME}" --tag "${TRAVIS_TAG}" || true
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then PATH="$(pwd)/tools/bin:$PATH" github-release release --user "${USERNAME}" --repo "${REPONAME}" --tag "${TRAVIS_TAG}" --name "travis-tools-linux.tar.xz" --file "dist/travis-tools.tar.xz" ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ] ; then PATH="$(pwd)/tools/bin:$PATH" github-release release --user "${USERNAME}" --repo "${REPONAME}" --tag "${TRAVIS_TAG}" --name "travis-tools-osx.tar.xz" --file "dist/travis-tools.tar.xz" ; fi
+  
