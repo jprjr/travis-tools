@@ -6,7 +6,7 @@ if [ -z "$TRAVIS_OS_NAME" ] ; then
   exit 0
 fi
 
-mkdir -p tools
+mkdir -p tools/bin
 
 if [ "$TRAVIS_OS_NAME" = "linux" ] ; then
   GITHUB_RELEASE_URL="https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2"
