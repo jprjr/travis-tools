@@ -35,3 +35,8 @@ runlog -s 1 -c 💩 -t 5 -- sleep 600
 Will run the command "sleep 600" in the background. In the foreground,
 it will print the "💩" character every second for a maximum of 5 minutes.
 Once it reaches 5 minutes, it will send a TERM signal to sleep.
+
+
+## Licensing
+
+MIT-licensed, see `LICENSE` for details.
