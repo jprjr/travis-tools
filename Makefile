@@ -7,7 +7,7 @@ dist: all
 	cp -v runlog dist/bin/runlog
 	cp -v runlog.c dist/src/runlog.c
 	cp -v README.md LICENSE dist/share/
-	tar cvJf travis-tools.tar.xz -C dist bin src share
+	tar cvJf dist/travis-tools.tar.xz -C dist bin src share
 
 CFLAGS = -Wall -Wextra
 
