@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+if [ -z "$TRAVIS_OS_NAME" ] ; then
+  exit 0
+fi
+
+mkdir -p tools
+
+if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
+  GITHUB_RELEASE_URL="https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2"
+fi
+
+if [ "$TRAVIS_OS_NAME" == "osx" ] ; then
+  GITHUB_RELEASE_URL="https://github.com/aktau/github-release/releases/download/v0.7.2/darwin-amd64-github-release.tar.bz2"
+fi
+
+curl -s -R -L -o tools/github-release.tar.bz2 "$GITHUB_RELEASE_URL"
+tar xf tools/github-release.tar.bz2 -C tools/bin --strip-components=3
+rm -f tools/github-release.tar.bz2
+

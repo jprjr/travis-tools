@@ -6,15 +6,11 @@ os:
   - osx
 
 install:
-  - mkdir -p tools
-  - if [  "$TRAVIS_OS_NAME" == "linux" ] ; then curl -s -R -L -o tools/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2 ; fi
-  - if [  "$TRAVIS_OS_NAME" == "osx" ] ; then curl -s -R -L -o tools/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/darwin-amd64-github-release.tar.bz2 ; fi
-  - tar xf tools/github-release.tar.bz2 -C tools/bin --strip-components=3
-  - rm -f tools/github-release.tar.bz2
+  - ./.install
 
 script:
-  - if [ "TRAVIS_OS_NAME" == "linux" ] ; then make CFLAGS="-static -Os -Wall -Wextra" LDFLAGS="-s" all ; fi
-  - if [ "TRAVIS_OS_NAME" == "osx" ] ; then make CFLAGS="-Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then make CFLAGS="-static -Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ] ; then make CFLAGS="-Os -Wall -Wextra" LDFLAGS="-s" all ; fi
 
 after_success:
   - ./.release
