@@ -1,6 +1,6 @@
 # travis-tools
 
-Just some tools I've written for running jobs no CI systems
+Just some tools I've written for running jobs on CI systems
 like Travis, Shippable, etc.
 
 ## runlog
