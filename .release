@@ -17,7 +17,7 @@ github-release \
   --tag "${TRAVIS_TAG}" || true
 
 exec github-release \
-  release \
+  upload \
   --user "${USERNAME}" \
   --repo "${REPONAME}" \
   --tag "${TRAVIS_TAG}" \
