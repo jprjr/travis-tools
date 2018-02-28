@@ -8,11 +8,11 @@ fi
 
 mkdir -p tools
 
-if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
+if [ "$TRAVIS_OS_NAME" = "linux" ] ; then
   GITHUB_RELEASE_URL="https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2"
 fi
 
-if [ "$TRAVIS_OS_NAME" == "osx" ] ; then
+if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
   GITHUB_RELEASE_URL="https://github.com/aktau/github-release/releases/download/v0.7.2/darwin-amd64-github-release.tar.bz2"
 fi
 

@@ -9,8 +9,8 @@ install:
   - ./.install
 
 script:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then make CFLAGS="-static -Os -Wall -Wextra" LDFLAGS="-s" all ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ] ; then make CFLAGS="-Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then make CFLAGS="-static -Os -Wall -Wextra" LDFLAGS="-s" all ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then make CFLAGS="-Os -Wall -Wextra" LDFLAGS="-s" all ; fi
 
 after_success:
   - ./.release
