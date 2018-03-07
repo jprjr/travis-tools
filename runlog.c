@@ -200,21 +200,18 @@ int main(int argc, char *argv[]) {
             cols = 0;
         }
         fflush(stderr);
+
         if(elapsed >= timeout) {
+            if(cols != 0) {
+                fprintf(stderr,"\n");
+                cols = 0;
+            }
             if(sigsent == 0) {
-                if(cols != 0) {
-                    fprintf(stderr,"\n");
-                    cols = 0;
-                }
                 fprintf(stderr,"Reached timeout, sending SIGTERM\n");
                 fflush(stderr);
                 kill(child_pid,SIGTERM);
                 sigsent = 1;
             } else {
-                if(cols != 0) {
-                    fprintf(stderr,"\n");
-                    cols = 0;
-                }
                 fprintf(stderr,"Reached timeout, sending SIGKILL\n");
                 fflush(stderr);
                 kill(child_pid,SIGKILL);
