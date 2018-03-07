@@ -26,16 +26,42 @@ runlog [-s sleeptime] [-c sleepchar] [-t timeout] [-l /path/to/log] [-h] -- prog
   * `timeout` is how long to wait before sending a TERM/KILL, in minutes
   * `--` (optional) can signal that you're no longer reading options.
 
-So for example:
+The only thing printed to standard output is the logfile name with a newline,
+so you can run something like:
+
+```bash
+LOGFILE=$(./runlog -s 1 -t 1 -- /bin/sh -e -c "echo some output && sleep 90")
+ecode=$?
+
+if [ $ecode != 0 ] ; then
+    printf "Error, here's the logfile ($LOGFILE)\n"
+    cat "${LOGFILE}"
+    exit 1
+fi
+
+```
+
+And your output will be:
+
+```
+............................................................
+Reached timeout, sending SIGTERM
+Process ended with signal 15 (Terminated)
+Terminated
+Error, here's the logfile (/tmp/runlog-qenYlg)
+some output
+```
+
+
+Another example:
 
 ```
 runlog -s 1 -c 💩 -t 5 -- sleep 600
 ```
 
 Will run the command "sleep 600" in the background. In the foreground,
-it will print the "💩" character every second for a maximum of 5 minutes.
+it will print the "💩" character to stderr every second for a maximum of 5 minutes.
 Once it reaches 5 minutes, it will send a TERM signal to sleep.
-
 
 ## Licensing
 

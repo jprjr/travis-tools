@@ -12,20 +12,28 @@ extern char **environ;
 
 pid_t child_pid;
 int child_status;
+int cols = 0;
 
 void handler(int sig) {
     if(sig != SIGCHLD) {
         return;
     }
-
-    if(waitpid(child_pid,&child_status,WNOHANG) == child_pid) {
-        if(WIFEXITED(child_status)) {
-            exit(WEXITSTATUS(child_status));
-        }
-        else if(WIFSIGNALED(child_status)) {
-            kill(0,WTERMSIG(child_status));
-            sleep(5);
-            exit(1);
+    pid_t waitpid_r;
+    while( (waitpid_r =waitpid(child_pid,&child_status,WNOHANG)) > 0) {
+        if(waitpid_r == child_pid) {
+            if(cols != 0) {
+                fprintf(stderr,"\n");
+            }
+            if(WIFEXITED(child_status)) {
+                fprintf(stderr,"Process exited with %d\n",WEXITSTATUS(child_status));
+                exit(WEXITSTATUS(child_status));
+            }
+            else if(WIFSIGNALED(child_status)) {
+                fprintf(stderr,"Process ended with signal %d (%s)\n",WTERMSIG(child_status),strsignal(WTERMSIG(child_status)));
+                kill(getpid(),WTERMSIG(child_status));
+                sleep(5);
+                exit(1);
+            }
         }
     }
 }
@@ -107,11 +115,10 @@ int main(int argc, char *argv[]) {
     int c = 0, timeout = 60, sleeptime = 30, elapsed = 0;
     extern char *optarg;
     extern int optind, optopt;
-    char file[4096] = "/tmp/runbg-XXXXXX";
+    char file[4096] = "/tmp/runlog-XXXXXX";
     int fd = -1;
     int fflag = 0;
     struct timeval tv = { .tv_sec = 0, .tv_usec = 0 };
-    int cols = 0;
     int sigsent = 0;
     char *tchar = ".";
 
@@ -195,12 +202,20 @@ int main(int argc, char *argv[]) {
         fflush(stderr);
         if(elapsed >= timeout) {
             if(sigsent == 0) {
-                fprintf(stderr,"\nReached timeout, sending SIGTERM\n");
+                if(cols != 0) {
+                    fprintf(stderr,"\n");
+                    cols = 0;
+                }
+                fprintf(stderr,"Reached timeout, sending SIGTERM\n");
                 fflush(stderr);
                 kill(child_pid,SIGTERM);
                 sigsent = 1;
             } else {
-                fprintf(stderr,"\nReached timeout, sending SIGKILL\n");
+                if(cols != 0) {
+                    fprintf(stderr,"\n");
+                    cols = 0;
+                }
+                fprintf(stderr,"Reached timeout, sending SIGKILL\n");
                 fflush(stderr);
                 kill(child_pid,SIGKILL);
             }
